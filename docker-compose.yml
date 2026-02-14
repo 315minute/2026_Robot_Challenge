@@ -1,0 +1,40 @@
+services:
+  robot_dev:
+    # ======================================================
+    # [상황 1] 팀원 노트북에서 개발할 때 (아래 4줄 주석 해제)
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pc
+    # runtime: nvidia  # 노트북에 외장 그래픽카드 있으면 주석 해제
+    
+    # [상황 2] 젯슨에서 실행할 때 (위 4줄 주석 처리하고 아래 주석 해제)
+    # build:
+    #   context: .
+    #   dockerfile: docker/Dockerfile.jetson
+    # runtime: nvidia  # 젯슨에서는 필수!
+    # ======================================================
+
+    container_name: robot_container
+    image: robot_project_image
+    
+    # [중요] 내 컴퓨터의 src 폴더를 도커 안이랑 연결 (실시간 수정 반영)
+    volumes:
+      - ./src:/root/workspace/src
+      - /tmp/.X11-unix:/tmp/.X11-unix  # GUI 화면 띄우기용
+      - /dev:/dev  # USB 장치(카메라, 아두이노) 연결용
+
+    # 네트워크 & 하드웨어 권한 다 열어주기 (로봇 개발 필수)
+    network_mode: "host"
+    privileged: true
+    pid: host
+    
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    
+    # 터미널 유지
+    command: /bin/bash
+    stdin_open: true
+    tty: true

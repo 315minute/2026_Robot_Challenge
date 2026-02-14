@@ -1,0 +1,26 @@
+# 젯슨용 (ARM64 CPU) - DustyNV의 젯슨 전용 이미지 (PyTorch, ROS 2 포함)
+FROM dustynv/ros:humble-pytorch-l4t-r36.2.0
+
+# 1. 기본 도구 설치
+# 젯슨 이미지는 최소한의 것만 들어있어서 C++ 도구 설치 필수
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    nano \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Python 라이브러리 설치
+# (PyTorch 등 무거운 건 이미 깔려있음)
+RUN pip3 install --upgrade pip && \
+    pip3 install \
+    numpy \
+    pandas \
+    pyserial
+
+# 3. 작업 공간 설정
+WORKDIR /root/workspace
+
+# 4. 환경 변수 설정
+RUN echo "source /opt/ros/humble/install/setup.bash" >> /root/.bashrc

@@ -1,0 +1,29 @@
+# 노트북용 (Intel/AMD CPU) - ROS 2 Humble 풀버전 (RViz, Gazebo 포함)
+FROM osrf/ros:humble-desktop-full
+
+# 1. 기본 설정 및 필수 도구 설치
+# build-essential: C++ 컴파일러(g++) 포함
+# cmake: C++ 빌드 도구
+# git, nano: 편의 도구
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    nano \
+    python3-pip \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Python 라이브러리 설치 (필요한 것들 여기에 추가)
+# numpy, opencv 등 기본적으로 많이 쓰는 것들
+RUN pip3 install --upgrade pip && \
+    pip3 install \
+    numpy \
+    opencv-python \
+    pandas
+
+# 3. 작업 공간 설정
+WORKDIR /root/workspace
+
+# 4. 환경 변수 설정 (도커 켜질 때 자동 실행)
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
