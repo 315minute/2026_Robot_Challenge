@@ -1,1 +1,3 @@
-# first-repository
+# 2026 AI 로봇 챌린지 11조 repo
+
+모두 화이팅~
