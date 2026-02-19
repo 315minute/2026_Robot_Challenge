@@ -6,12 +6,18 @@ services:
       context: .
       dockerfile: docker/Dockerfile.pc
     # runtime: nvidia  # 노트북에 외장 그래픽카드 있으면 주석 해제
-    
+    # ======================================================
     # [상황 2] 젯슨에서 실행할 때 (위 4줄 주석 처리하고 아래 주석 해제)
     # build:
     #   context: .
     #   dockerfile: docker/Dockerfile.jetson
     # runtime: nvidia  # 젯슨에서는 필수!
+    # ======================================================
+    # [상황 3] 연구실 PC에서 YOLO 모델 학습할 때 (아래 4줄 주석 해제)
+    # build:
+    #   context: .
+    #   dockerfile: docker/Dockerfile.train
+    # runtime: nvidia  # 연구실 GPU 사용 필수!
     # ======================================================
 
     container_name: robot_container

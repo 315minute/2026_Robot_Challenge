@@ -1,0 +1,31 @@
+# 1. 베이스 이미지: 연구실 GPU(TITAN Xp 등) 호환성을 위한 최적의 안정화 버전 (CUDA 11.8 + PyTorch)
+FROM pytorch/pytorch:2.1.2-cuda11.8-cudnn8-devel
+
+# 설치 중 키보드 입력(Timezone 설정 등)을 요구하며 도커 빌드가 멈추는 현상 방지
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 2. 시스템 필수 패키지 설치
+# (주의: OpenCV를 도커에서 에러 없이 띄우려면 libgl1-mesa-glx 등의 그래픽 라이브러리가 반드시 필요합니다)
+RUN apt-get update && apt-get install -y \
+    git \
+    nano \
+    wget \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. YOLO 학습 전용 파이썬 라이브러리 설치
+# ultralytics: YOLOv8, YOLO10 등을 모두 돌릴 수 있는 통합 라이브러리
+# tensorboard: 학습 진행 상황(Loss, mAP 등)을 그래프로 예쁘게 모니터링하기 위한 도구
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    ultralytics \
+    tensorboard \
+    pandas \
+    matplotlib
+
+# 4. 작업 공간 설정 (내 컴퓨터의 src 폴더와 연결될 위치)
+WORKDIR /root/workspace
+
+# 5. 터미널 유지
+CMD ["/bin/bash"]
